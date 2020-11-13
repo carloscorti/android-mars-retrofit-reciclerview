@@ -19,11 +19,12 @@ package com.example.android.marsrealestate.overview
 
 import android.os.Bundle
 import android.view.*
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
 import com.example.android.marsrealestate.R
-import com.example.android.marsrealestate.databinding.GridViewItemBinding
+import com.example.android.marsrealestate.databinding.FragmentOverviewBinding
 
 /**
  * This fragment shows the the status of the Mars real-estate web services transaction.
@@ -43,16 +44,27 @@ class OverviewFragment : Fragment() {
      */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-//        val binding = FragmentOverviewBinding.inflate(inflater)
+        val binding = FragmentOverviewBinding.inflate(inflater)
 
-        val binding: GridViewItemBinding = DataBindingUtil.inflate(
-                inflater, R.layout.grid_view_item, container, false)
+        val adapter = MarsPropertyAdapter()
+        binding.marsList.adapter = adapter
+
+        var gridLayoutManager = GridLayoutManager(activity, 2)
+        binding.marsList.layoutManager = gridLayoutManager
 
         // Allows Data Binding to Observe LiveData with the lifecycle of this Fragment
         binding.lifecycleOwner = this
 
         // Giving the binding access to the OverviewViewModel
         binding.viewModel = viewModel
+
+        viewModel.apply {
+            marsProperties.observe(viewLifecycleOwner, Observer {
+                it?.let {
+                    adapter.submitList(it)
+                }
+            })
+        }
 
         setHasOptionsMenu(true)
         return binding.root

@@ -23,17 +23,17 @@
 
     <data>
         <variable
-            name="viewModel"
-            type="com.example.android.marsrealestate.overview.OverviewViewModel" />
+            name="marsProperty"
+            type="com.example.android.marsrealestate.network.MarsProperty" />
     </data>
 
     <ImageView
         android:id="@+id/mars_image"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         android:padding="2dp"
         android:scaleType="centerCrop"
-        app:imgSource="@{viewModel.property.imgSrcUrl}"
+        app:imgSource="@{marsProperty.imgSrcUrl}"
         tools:src="@tools:sample/backgrounds/scenic" />
 </layout>

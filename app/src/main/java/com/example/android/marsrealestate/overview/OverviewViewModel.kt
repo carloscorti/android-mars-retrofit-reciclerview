@@ -31,12 +31,12 @@ class OverviewViewModel : ViewModel() {
 
     // The internal MutableLiveData String that stores the status of the most recent request
     private val _status = MutableLiveData<String>()
-    val status: LiveData<String>
-        get() = _status
+//    val status: LiveData<String>
+//        get() = _status
 
-    private val _property = MutableLiveData<MarsProperty>()
-    val property: LiveData<MarsProperty>
-        get() = _property
+    private val _marsProperties = MutableLiveData<List<MarsProperty>>()
+    val marsProperties: LiveData<List<MarsProperty>>
+        get() = _marsProperties
 
     private val coroutineScope = CoroutineScope(Dispatchers.Main + Job())
 
@@ -56,10 +56,10 @@ class OverviewViewModel : ViewModel() {
 
             try {
 //                _response.value = "Data size ${reqProperties.await().size}"
-                val reqProperties = MarsApi.retrofitService.getProperties()
+                val marsGroundList = MarsApi.retrofitService.getProperties()
 //                _response.value = "Data size ${reqProperties.size}"
-                if (reqProperties.isNotEmpty()) {
-                    _property.value = reqProperties[0]
+                if (marsGroundList.isNotEmpty()) {
+                    _marsProperties.value = marsGroundList
                 }
 
             }catch (e: Exception) {
