@@ -21,10 +21,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.android.marsrealestate.network.MarsApi
-import com.example.android.marsrealestate.network.MarsProperty
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.*
 
 /**
  * The [ViewModel] that is attached to the [OverviewFragment].
@@ -33,6 +30,8 @@ class OverviewViewModel : ViewModel() {
 
     // The internal MutableLiveData String that stores the status of the most recent request
     private val _response = MutableLiveData<String>()
+
+    private val coroutineScope = CoroutineScope(Dispatchers.Main + Job())
 
     // The external immutable LiveData for the request status String
     val response: LiveData<String>
@@ -49,15 +48,23 @@ class OverviewViewModel : ViewModel() {
      * Sets the value of the status LiveData to the Mars API status.
      */
     private fun getMarsRealEstateProperties() {
-        MarsApi.retrofitService.getProperties().enqueue(object : Callback<List<MarsProperty>> {
-            override fun onFailure(call: Call<List<MarsProperty>>, t: Throwable) {
-                _response.value = "Failure ${t.message}"
-            }
+        coroutineScope.launch {
+//            val reqProperties = async { MarsApi.retrofitService.getProperties() }
 
-            override fun onResponse(call: Call<List<MarsProperty>>, response: Response<List<MarsProperty>>) {
-                _response.value = "Data size ${response.body()?.size}"
-            }
+            try {
+//                _response.value = "Data size ${reqProperties.await().size}"
+//                val reqProperties = MarsApi.retrofitService.getProperties()
+//                _response.value = "Data size ${reqProperties.size}"
+                _response.value = "Data size ${MarsApi.retrofitService.getProperties().size}"
 
-        })
+            }catch (e: Exception) {
+                _response.value = "Failure ${e.message}"
+            }
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        coroutineScope.cancel()
     }
 }
