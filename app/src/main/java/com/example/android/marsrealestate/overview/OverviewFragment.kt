@@ -23,6 +23,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.android.marsrealestate.R
 import com.example.android.marsrealestate.databinding.FragmentOverviewBinding
@@ -48,7 +49,7 @@ class OverviewFragment : Fragment() {
         val binding = FragmentOverviewBinding.inflate(inflater)
 
         val clickListener = MarsPropertyListener { marsProperty ->
-            Toast.makeText(context, "propert id ${marsProperty.id}", Toast.LENGTH_SHORT).show()
+            viewModel.onMarsPropertyClick(marsProperty)
         }
 
         val adapter = MarsPropertyAdapter(clickListener)
@@ -67,6 +68,14 @@ class OverviewFragment : Fragment() {
             marsProperties.observe(viewLifecycleOwner, Observer {
                 it?.let {
                     adapter.submitList(it)
+                }
+            })
+
+            selectedMarsProperty.observe(viewLifecycleOwner, Observer {
+                it?.let{
+//                    Toast.makeText(context, "property id ${it.id}", Toast.LENGTH_SHORT).show()
+                    findNavController().navigate(OverviewFragmentDirections.actionShowDetail(it))
+                    onMarsPropertyClickCompleted()
                 }
             })
         }

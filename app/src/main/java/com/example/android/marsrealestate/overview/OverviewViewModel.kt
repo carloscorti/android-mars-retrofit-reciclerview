@@ -17,6 +17,7 @@
 
 package com.example.android.marsrealestate.overview
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -37,6 +38,10 @@ class OverviewViewModel : ViewModel() {
     private val _marsProperties = MutableLiveData<List<MarsProperty>>()
     val marsProperties: LiveData<List<MarsProperty>>
         get() = _marsProperties
+
+    private val _selectedMarsProperty = MutableLiveData<MarsProperty>()
+    val selectedMarsProperty: LiveData<MarsProperty>
+        get() = _selectedMarsProperty
 
     private val coroutineScope = CoroutineScope(Dispatchers.Main + Job())
 
@@ -66,11 +71,20 @@ class OverviewViewModel : ViewModel() {
                 _status.value = FetchStatus.DONE
 
 
-            }catch (e: Exception) {
+            } catch (e: Exception) {
                 _status.value = FetchStatus.ERROR
                 _marsProperties.value = arrayListOf()
             }
         }
+    }
+
+    fun onMarsPropertyClick(marsProperty: MarsProperty) {
+        _selectedMarsProperty.value = marsProperty
+//        Log.i("cacOverviewViewModel", "propert id ${marsProperty.id}")
+    }
+
+    fun onMarsPropertyClickCompleted() {
+        _selectedMarsProperty.value = null
     }
 
     override fun onCleared() {
