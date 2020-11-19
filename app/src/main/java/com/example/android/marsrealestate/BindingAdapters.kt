@@ -17,11 +17,14 @@
 
 package com.example.android.marsrealestate
 
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.net.toUri
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.example.android.marsrealestate.overview.FetchStatus
 
 @BindingAdapter("imgSource")
 fun bindImage(imgView: ImageView, imgUrl: String?) {
@@ -34,5 +37,31 @@ fun bindImage(imgView: ImageView, imgUrl: String?) {
                         .error(R.drawable.ic_broken_image))
                 .into(imgView)
 
+    }
+}
+
+@BindingAdapter("marsApiStatus")
+fun bindStatus(statusImg: ImageView, status: FetchStatus?) {
+    status?.let {
+        when(status) {
+            FetchStatus.LOADING -> {
+                statusImg.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+                statusImg.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+                statusImg.visibility = View.VISIBLE
+                statusImg.setImageResource(R.drawable.loading_animation)
+
+            }
+
+            FetchStatus.DONE -> {
+                statusImg.visibility = View.GONE
+            }
+
+            FetchStatus.ERROR -> {
+                statusImg.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
+                statusImg.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                statusImg.visibility = View.VISIBLE
+                statusImg.setImageResource(R.drawable.ic_connection_error)
+            }
+        }
     }
 }

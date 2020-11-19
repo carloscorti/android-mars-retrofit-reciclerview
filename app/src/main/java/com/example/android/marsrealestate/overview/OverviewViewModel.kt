@@ -30,9 +30,9 @@ import kotlinx.coroutines.*
 class OverviewViewModel : ViewModel() {
 
     // The internal MutableLiveData String that stores the status of the most recent request
-    private val _status = MutableLiveData<String>()
-//    val status: LiveData<String>
-//        get() = _status
+    private val _status = MutableLiveData<FetchStatus>()
+    val status: LiveData<FetchStatus>
+        get() = _status
 
     private val _marsProperties = MutableLiveData<List<MarsProperty>>()
     val marsProperties: LiveData<List<MarsProperty>>
@@ -53,17 +53,22 @@ class OverviewViewModel : ViewModel() {
     private fun getMarsRealEstateProperties() {
         coroutineScope.launch {
 //            val reqProperties = async { MarsApi.retrofitService.getProperties() }
+            _status.value = FetchStatus.LOADING
 
             try {
 //                _response.value = "Data size ${reqProperties.await().size}"
+
                 val marsGroundList = MarsApi.retrofitService.getProperties()
 //                _response.value = "Data size ${reqProperties.size}"
                 if (marsGroundList.isNotEmpty()) {
                     _marsProperties.value = marsGroundList
                 }
+                _status.value = FetchStatus.DONE
+
 
             }catch (e: Exception) {
-                _status.value = "Failure ${e.message}"
+                _status.value = FetchStatus.ERROR
+                _marsProperties.value = arrayListOf()
             }
         }
     }
@@ -72,4 +77,10 @@ class OverviewViewModel : ViewModel() {
         super.onCleared()
         coroutineScope.cancel()
     }
+}
+
+enum class FetchStatus {
+    LOADING,
+    DONE,
+    ERROR
 }
