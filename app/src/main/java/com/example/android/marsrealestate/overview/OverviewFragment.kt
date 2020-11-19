@@ -19,6 +19,7 @@ package com.example.android.marsrealestate.overview
 
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -46,7 +47,11 @@ class OverviewFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         val binding = FragmentOverviewBinding.inflate(inflater)
 
-        val adapter = MarsPropertyAdapter()
+        val clickListener = MarsPropertyListener { marsProperty ->
+            Toast.makeText(context, "propert id ${marsProperty.id}", Toast.LENGTH_SHORT).show()
+        }
+
+        val adapter = MarsPropertyAdapter(clickListener)
         binding.marsList.adapter = adapter
 
         var gridLayoutManager = GridLayoutManager(activity, 2)

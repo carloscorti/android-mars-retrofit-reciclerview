@@ -25,19 +25,22 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.android.marsrealestate.databinding.GridViewItemBinding
 import com.example.android.marsrealestate.network.MarsProperty
 
-class MarsPropertyAdapter() : ListAdapter<MarsProperty, MarsPropertyAdapter.MarsPropertyViewHolder>(MarsPropertyDiffCallback()) {
+class MarsPropertyAdapter(private val marsPropertyListener: MarsPropertyListener)
+    : ListAdapter<MarsProperty, MarsPropertyAdapter.MarsPropertyViewHolder>(MarsPropertyDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = MarsPropertyViewHolder.from(parent)
 
 
     override fun onBindViewHolder(holder: MarsPropertyViewHolder, position: Int) {
         val marsItem = getItem(position)
-        holder.bind(marsItem)
+        holder.bind(marsItem, marsPropertyListener)
     }
 
     class MarsPropertyViewHolder private constructor(private val binding: GridViewItemBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: MarsProperty) {
+        fun bind(item: MarsProperty, marsPropertyListener: MarsPropertyListener) {
             binding.marsProperty = item
+//            binding.marsImage.setOnClickListener{marsPropertyListener.onClick(item)}
+            binding.marsPropertyClickListener = marsPropertyListener
             binding.executePendingBindings()
         }
 
@@ -52,6 +55,10 @@ class MarsPropertyAdapter() : ListAdapter<MarsProperty, MarsPropertyAdapter.Mars
         }
     }
 
+}
+
+class MarsPropertyListener(val clickCallback: (marsProperty: MarsProperty) -> Unit) {
+    fun onClick(marsProperty: MarsProperty) = clickCallback(marsProperty)
 }
 
 class MarsPropertyDiffCallback : DiffUtil.ItemCallback<MarsProperty>() {

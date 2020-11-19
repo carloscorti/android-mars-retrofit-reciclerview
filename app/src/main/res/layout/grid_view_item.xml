@@ -25,6 +25,10 @@
         <variable
             name="marsProperty"
             type="com.example.android.marsrealestate.network.MarsProperty" />
+
+        <variable
+            name="marsPropertyClickListener"
+            type="com.example.android.marsrealestate.overview.MarsPropertyListener" />
     </data>
 
     <ImageView
@@ -35,5 +39,6 @@
         android:padding="2dp"
         android:scaleType="centerCrop"
         app:imgSource="@{marsProperty.imgSrcUrl}"
+        android:onClick="@{() -> marsPropertyClickListener.onClick(marsProperty)}"
         tools:src="@tools:sample/backgrounds/scenic" />
 </layout>
