@@ -22,6 +22,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.android.marsrealestate.network.MarsApi
+import com.example.android.marsrealestate.network.MarsApiFilter
 import com.example.android.marsrealestate.network.MarsProperty
 import kotlinx.coroutines.*
 
@@ -49,13 +50,13 @@ class OverviewViewModel : ViewModel() {
      * Call getMarsRealEstateProperties() on init so we can display status immediately.
      */
     init {
-        getMarsRealEstateProperties()
+        getMarsRealEstateProperties(MarsApiFilter.SHOW_ALL)
     }
 
     /**
      * Sets the value of the status LiveData to the Mars API status.
      */
-    private fun getMarsRealEstateProperties() {
+    private fun getMarsRealEstateProperties(filter: MarsApiFilter) {
         coroutineScope.launch {
 //            val reqProperties = async { MarsApi.retrofitService.getProperties() }
             _status.value = FetchStatus.LOADING
@@ -63,7 +64,7 @@ class OverviewViewModel : ViewModel() {
             try {
 //                _response.value = "Data size ${reqProperties.await().size}"
 
-                val marsGroundList = MarsApi.retrofitService.getProperties()
+                val marsGroundList = MarsApi.retrofitService.getProperties(filter.value)
 //                _response.value = "Data size ${reqProperties.size}"
                 if (marsGroundList.isNotEmpty()) {
                     _marsProperties.value = marsGroundList
@@ -85,6 +86,10 @@ class OverviewViewModel : ViewModel() {
 
     fun onMarsPropertyClickCompleted() {
         _selectedMarsProperty.value = null
+    }
+
+    fun getPropertiesFiltered(filter: MarsApiFilter) {
+        getMarsRealEstateProperties(filter)
     }
 
     override fun onCleared() {
