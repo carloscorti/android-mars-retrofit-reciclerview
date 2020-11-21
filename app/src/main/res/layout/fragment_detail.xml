@@ -57,7 +57,7 @@
                 android:textSize="39sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/main_photo_image"
-                android:text="@{detailViewModel.marsPropertySelected.type}"
+                android:text="@{detailViewModel.propertyType}"
                 tools:text="To Rent" />
 
             <TextView
